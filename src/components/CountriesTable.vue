@@ -1,5 +1,9 @@
 <template>
-    <el-table :data="getAllCountries" :default-sort = "{ prop: 'name', order: 'ascending' }" style="width: 100%" stripe>
+    <el-table
+        :data="getAllCountries"
+        :default-sort = "{ prop: 'name', order: 'ascending' }"
+        style="width: 100%"
+        stripe>
         <el-table-column label="Code" prop="code" width="90px" sortable>
             <template slot-scope="scope">
                 <div v-if="getIsRowInEditMode(scope)">
@@ -32,14 +36,19 @@
                     size="mini">
                     <i class="el-icon-edit"></i> {{ getIsRowInEditMode(scope) ? 'Submit' : 'Edit' }}
                 </el-button>
-                <el-button size="mini" type="danger" @click="handlerToDo(scope.$index, scope.row)">Delete</el-button>
+                <el-button
+                    @click="deleteCountry(scope.row.code)"
+                    type="danger"
+                    size="mini">
+                    Delete
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
+    import { mapGetters, mapActions } from 'vuex';
     export default {
       name: 'CountriesTable',
       data() {
@@ -50,6 +59,7 @@
         }
       },
       methods: {
+        ...mapActions([ 'deleteCountry' ]),
         getIsRowInEditMode(scope) {
           return (scope.row.code === this.editingCountryCode);
         },
