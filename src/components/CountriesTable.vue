@@ -32,12 +32,14 @@
             <template slot-scope="scope">
                 <el-button
                     @click="onClickEdit(scope.row)"
+                    :disabled="!getIsRowInEditMode(scope) && isInEditMode"
                     :class="{ 'el-button--primary' : getIsRowInEditMode(scope) }"
                     size="mini">
                     <i class="el-icon-edit"></i> {{ getIsRowInEditMode(scope) ? 'Submit' : 'Edit' }}
                 </el-button>
                 <el-button
                     @click="deleteCountry(scope.row.code)"
+                    :disabled="isInEditMode"
                     type="danger"
                     size="mini">
                     Delete
@@ -48,7 +50,7 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex';
+    import { mapState, mapGetters, mapActions } from 'vuex';
     export default {
       name: 'CountriesTable',
       data() {
@@ -58,12 +60,17 @@
           editingCountryCode: ''
         }
       },
+      computed: {
+        ...mapState([ 'isInEditMode' ]),
+        ...mapGetters([ 'getAllCountries' ]),
+      },
       methods: {
         ...mapActions([ 'deleteCountry' ]),
         getIsRowInEditMode(scope) {
           return (scope.row.code === this.editingCountryCode);
         },
         onClickEdit({ code, name }) {
+          this.$store.dispatch('setIsInEditMode', true);
           this.editingCountryCode = ((!this.editingCountryCode) ? code : ''); // toggle
           if (!this.editingCountryCode) {
             this.submitEdit(code);
@@ -78,12 +85,10 @@
             code: this.codeInput,
             name: this.nameInput
           });
+          this.$store.dispatch('setIsInEditMode', false);
           this.editingCountryCode = '';
         }
       },
-      computed: {
-        ...mapGetters([ 'getAllCountries' ]),
-      }
     }
 </script>
 
