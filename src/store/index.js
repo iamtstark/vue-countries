@@ -9,25 +9,23 @@ export default new Vuex.Store({
   state: {
     countries
   },
-
   getters: {
     getAllCountries(state) {
       return state.countries;
     }
   },
-
   mutations: {
-    UPDATE_COUNTRY_DATA(state, countryEdits) {
-      /* eslint-disable */ console.log(state);
-      /* eslint-disable */ console.log(countryEdits);
+    UPDATE_COUNTRY_DATA(state, { originalCode, code, name }) {
+      state.countries.map(item => {
+        if (item.code === originalCode) {
+          item.code = code;
+          item.name = name;
+        }
+      });
     }
   },
-
   actions: {
     submitCountryEdit(store, countryEdits) {
-      /* eslint-disable */ console.log(store);
-      /* eslint-disable */ console.log(countryEdits);
-      // ToDo
       store.commit('UPDATE_COUNTRY_DATA', countryEdits);
     }
   }

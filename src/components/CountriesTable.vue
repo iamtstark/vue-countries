@@ -68,7 +68,7 @@
             code: this.codeInput,
             name: this.nameInput
           });
-          this.edittingCountryCode = '';
+          this.editingCountryCode = '';
         }
       },
       computed: {
