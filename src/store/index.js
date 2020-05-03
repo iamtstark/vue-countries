@@ -26,11 +26,12 @@ export default new Vuex.Store({
       state.isInEditMode = bool;
     },
     UPDATE_COUNTRY_DATA(state, { originalCode, code, name }) {
-      state.countries.map(item => {
+      state.countries = state.countries.map(item => {
         if (item.code === originalCode) {
           item.code = code;
           item.name = name;
         }
+        return item;
       });
     }
   },
