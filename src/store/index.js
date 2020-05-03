@@ -11,6 +11,9 @@ export default new Vuex.Store({
   },
 
   getters: {
+    getAllCountries(state) {
+      return state.countries;
+    }
   },
 
   mutations: {
