@@ -17,8 +17,18 @@ export default new Vuex.Store({
   },
 
   mutations: {
+    UPDATE_COUNTRY_DATA(state, countryEdits) {
+      /* eslint-disable */ console.log(state);
+      /* eslint-disable */ console.log(countryEdits);
+    }
   },
 
   actions: {
+    submitCountryEdit(store, countryEdits) {
+      /* eslint-disable */ console.log(store);
+      /* eslint-disable */ console.log(countryEdits);
+      // ToDo
+      store.commit('UPDATE_COUNTRY_DATA', countryEdits);
+    }
   }
 });
