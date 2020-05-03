@@ -9,8 +9,10 @@
                 <div v-if="getIsRowInEditMode(scope)">
                     <el-input
                         @keyup.enter.native="submitEdit(scope.row.code)"
+                        @keyup.escape.native="exitEditWithoutSubmission(scope.row.code)"
                         placeholder="Code"
-                        v-model="codeInput">
+                        v-model="codeInput"
+                        ref="codeInput">
                     </el-input>
                 </div>
                 <span v-else>{{ scope.row.code }}</span>
@@ -21,6 +23,7 @@
                 <div v-if="getIsRowInEditMode(scope)">
                     <el-input
                         @keyup.enter.native="submitEdit(scope.row.code)"
+                        @keyup.escape.native="exitEditWithoutSubmission(scope.row.code)"
                         placeholder="Country name"
                         v-model="nameInput">
                     </el-input>
@@ -87,9 +90,14 @@
           });
         },
         onClickEdit({ code, name }) {
+          this.ensureCodeFieldFocused();
           this.$store.dispatch('setIsInEditMode', true);
           this.editingCountryCode = ((!this.editingCountryCode) ? code : ''); // toggle
           if (!this.editingCountryCode) {
+            if (this.isCodeOverTwoCharacaters(this.codeInput)) {
+              this.editingCountryCode = code; // maintain edit mode
+              return this.$message.error('Country code must be two characters in length.');
+            }
             this.submitEdit(code);
             return;
           }
@@ -104,8 +112,24 @@
           });
           this.$store.dispatch('setIsInEditMode', false);
           this.editingCountryCode = '';
+        },
+        isCodeOverTwoCharacaters() {
+          return this.codeInput.length !== 2;
+        },
+        ensureCodeFieldFocused() {
+            // This is admittedly ugly when mixed with Element UI
+            setTimeout(() => {
+              const codeInputElement = this.$refs.codeInput;
+              if (codeInputElement) {
+                codeInputElement.$el.children[0].focus();
+              }
+            }, 1);
+        },
+        exitEditWithoutSubmission() {
+          this.editingCountryCode = '';
+          this.$store.dispatch('setIsInEditMode', false);
         }
-      },
+      }
     }
 </script>
 
