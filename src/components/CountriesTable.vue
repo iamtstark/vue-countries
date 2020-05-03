@@ -20,7 +20,7 @@
             <template slot-scope="scope">
                 <div v-if="getIsRowInEditMode(scope)">
                     <el-input
-                        @keyup.enter.native="submitEdit(scope.row.name)"
+                        @keyup.enter.native="submitEdit(scope.row.code)"
                         placeholder="Country name"
                         v-model="nameInput">
                     </el-input>
@@ -38,7 +38,7 @@
                     <i class="el-icon-edit"></i> {{ getIsRowInEditMode(scope) ? 'Submit' : 'Edit' }}
                 </el-button>
                 <el-button
-                    @click="deleteCountry(scope.row.code)"
+                    @click="openDeleteConfirmModal(scope.row)"
                     :disabled="isInEditMode"
                     type="danger"
                     size="mini">
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import { mapState, mapGetters, mapActions } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
     export default {
       name: 'CountriesTable',
       data() {
@@ -65,9 +65,26 @@
         ...mapGetters([ 'getAllCountries' ]),
       },
       methods: {
-        ...mapActions([ 'deleteCountry' ]),
         getIsRowInEditMode(scope) {
           return (scope.row.code === this.editingCountryCode);
+        },
+        openDeleteConfirmModal({ code,name }) {
+          this.$confirm(`Are you sure you want to delete ${name}?`, 'Warning', {
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            type: 'warning'
+          }).then(() => {
+            this.$store.dispatch('deleteCountry', code);
+            this.$message({
+              type: 'success',
+              message: 'Delete completed'
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: 'Delete canceled'
+            });
+          });
         },
         onClickEdit({ code, name }) {
           this.$store.dispatch('setIsInEditMode', true);
